@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Recruitment task</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1 class="page-header text-center">Workers</h1>
+        <div class="col-md-8 col-md-offset-2">
+          <div class="row">
+            <div class="col-md-4">
+              <form>
+                <input type="text" class="form-control" placeholder="First Name" v-model="newFirstName">
+                <input type="text" class="form-control" placeholder="Last Name" v-model="newLastName">
+                <select class="form-control" placeholder="Department" v-model="newDepartment">
+                  <option></option>
+                  <option>IT</option>
+                  <option>Sales</option>
+                  <option>Administration</option>
+                </select>
+                <input type="number" class="form-control" placeholder="Salary" v-model="newAmount">
+                <button type="button" v-on:click="addWorker">Add new worker</button>
+              </form>
+            </div>
+            <div class="col-md-4 col-md-offset-8">
+              <input type="text" class="form-control" placeholder="Search data" v-model="searchData">
+              <select class="form-control" placeholder="Search department" v-model="searchDepartment">
+                <option></option>
+                <option>IT</option>
+                <option>Sales</option>
+                <option>Administration</option>
+              </select>
+            </div>
+            <div class="col-md-4 col-md-offset-8">
+              <input type="number" class="form-control" placeholder="Salary min" v-model="searchAmountMin">
+              <input type="number" class="form-control" placeholder="Salary max" v-model="searchAmountMax">
+            </div>
+          </div>
+          <div style="height:5px;"></div>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <th>Lp.</th>
+              <th>Firstname</th>
+              <th>Lastname</th>
+              <th>Department</th>
+              <th>Salary</th>
+              <th>Delete</th>
+            </thead>
+            <tbody>
+              <tr v-for="(worker, index) in searchDepartments">
+                <td>{{index+1}}.</td>
+                <td>{{worker.firstName}}</td>
+                <td>{{worker.lastName}}</td>
+                <td>{{worker.department}}</td>
+                <td>{{worker.salary.amount}} {{worker.salary.currency}}</td>
+                <td><button v-on:click="removeWorker(index)">Delete</button></td>
+              </tr>
+              <tr>
+                <td colspan="3"></td>
+                <td>Summary</td>
+                <td colspan="2">{{salarySum}} USD</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+new Vue({
+  el: "#app",
+  data: {
+    newFirstName: '',
+    newLastName: '',
+    newDepartment: '',
+    newAmount: '',
+
+    searchData: '',
+    searchDepartment: '',
+    searchAmountMin: '',
+    searchAmountMax: '',
+
+    workerList: [{
+        "firstName": "John",
+        "lastName": "Smith",
+        "department": "IT",
+        "salary": {
+          "amount": 3000,
+          "currency": "USD"
+        }
+      },
+      {
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "department": "IT",
+        "salary": {
+          "amount": 3000.50,
+          "currency": "USD"
+        }
+      },
+      {
+        "firstName": "Bob",
+        "lastName": "Colman",
+        "department": "Sales",
+        "salary": {
+          "amount": 9000,
+          "currency": "USD"
+        }
+      },
+      {
+        "firstName": "Barbara",
+        "lastName": "O'Connor",
+        "department": "Sales",
+        "salary": {
+          "amount": 4000,
+          "currency": "USD"
+        }
+      },
+      {
+        "firstName": "Adam",
+        "lastName": "Murphy",
+        "department": "Administration",
+        "salary": {
+          "amount": 2000,
+          "currency": "USD"
+        }
+      }
+    ],
+  },
+
+  methods: {
+    addWorker: function() {
+      var firstName = this.newFirstName.trim()
+      var lastName = this.newLastName.trim()
+      var department = this.newDepartment.trim()
+      var amount = this.newAmount.trim()
+
+      if (firstName, lastName, department, amount) {
+        this.workerList.push({
+          "firstName": firstName,
+          "lastName": lastName,
+          "department": department,
+          "salary": {
+            "amount": amount,
+            "currency": "USD"
+          }
+        })
+        this.newFirstName = ''
+        this.newLastName = ''
+        this.newDepartment = ''
+        this.newAmount = ''
+      }
+    },
+
+    removeWorker: function(index) {
+      this.workerList.splice(index, 1)
+    }
+  },
+
+  computed: {
+    searchWorker: function() {
+      return this.workerList.filter((worker) => {
+        return worker.firstName.match(this.searchData) || worker.lastName.match(this.searchData)
+      });
+    },
+
+    searchDepartments: function() {
+      return this.searchWorker.filter((worker) => {
+        return worker.department.match(this.searchDepartment)
+      });
+    },
+
+    searchSalaryMin: function() {
+      
+    },
+
+    searchSalaryMax: function() {
+
+    },
+
+    salarySum() {
+      return this.searchDepartments.reduce((acc, i) => parseFloat(acc) + parseFloat(i.salary.amount), 0);
+    }
+  }
+});
+    </script>
+  </body>
+</html>
